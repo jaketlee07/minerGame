@@ -1,5 +1,6 @@
 package com.jake.main.main.Screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -25,13 +27,19 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.jake.main.main.MyController;
 import com.jake.main.main.MyGame;
 import com.jake.main.main.Sprites.Miner;
+import com.jake.main.main.Tools.B2DWorldCreator;
 import com.sun.org.apache.xpath.internal.operations.Or;
+
+import sun.rmi.runtime.Log;
 
 
 public class PlayScreen  implements Screen {
     private MyGame game;
+    private TextureAtlas atlas;
+
     private OrthographicCamera gamecam;
     private Viewport gamePort;
 
@@ -46,11 +54,13 @@ public class PlayScreen  implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
 
-    public Controller controller;
+    public static MyController controller;
 
 
     public PlayScreen(MyGame game)
     {
+        atlas = new TextureAtlas("Mario_and_Enemies.pack");
+
         this.game = game;
         // create cam to follow character through map
         gamecam = new OrthographicCamera();
@@ -65,29 +75,16 @@ public class PlayScreen  implements Screen {
         world = new World(new Vector2(0,-10 ), true);
         b2dr = new Box2DDebugRenderer();
 
-        player = new Miner(world);
+        player = new Miner(world, this);
 
-        BodyDef bdef = new BodyDef();
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fdef = new FixtureDef();
-        Body body;
+        new B2DWorldCreator(world, map);
 
-        // create wall bodies/fixtures
-        for(MapObject object: map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class))
-        {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+       controller = new MyController();
+    }
 
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set((rect.getX() + rect.getWidth() / 2) / MyGame.PPM, (rect.getY() + rect.getHeight() / 2) / MyGame.PPM);
-
-            body = world.createBody(bdef);
-
-            shape.setAsBox(rect.getWidth() / 2 / MyGame.PPM, rect.getHeight() / 2 / MyGame.PPM);
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
-
-       // controller = new Controller();
+    public TextureAtlas getAtlas()
+    {
+        return atlas;
     }
 
     @Override
@@ -97,27 +94,30 @@ public class PlayScreen  implements Screen {
 
     public void handleInput(float dt)
     {
-        if(Gdx.input.isKeyPressed(Input.Keys.UP))
+        if(controller.isUpPressed())
         {
             player.b2body.applyLinearImpulse(new Vector2(0,4f), player.b2body.getWorldCenter(), true);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2)
+        if(controller.isRightPressed() && player.b2body.getLinearVelocity().x <= 2)
         {
             player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= -2)
+        if(controller.isLeftPressed() && player.b2body.getLinearVelocity().x <= -2)
         {
             player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.UP))
+        if(controller.isDownPressed())
         {
             player.b2body.applyLinearImpulse(new Vector2(0,-4f), player.b2body.getWorldCenter(), true);
         }
+
+
     }
 
     public void update(float dt)
     {
         handleInput(dt);
+        player.update(dt);
         gamecam.update();
         renderer.setView(gamecam);
 
@@ -140,8 +140,14 @@ public class PlayScreen  implements Screen {
 
             b2dr.render(world, gamecam.combined);
 
+            if (Gdx.app.getType() == Application.ApplicationType.Android)
+            {
+                controller.draw();
+            }
+
             game.batch.setProjectionMatrix(gamecam.combined);
             game.batch.begin();
+            player.draw(game.batch);
             game.batch.end();
         }
 
@@ -149,7 +155,7 @@ public class PlayScreen  implements Screen {
     public void resize(int width, int height)
     {
         gamePort.update(width,height);
-       // controller.resize(width,height);
+       controller.resize(width,height);
     }
 
     @Override
@@ -168,7 +174,13 @@ public class PlayScreen  implements Screen {
     }
 
     @Override
-    public void dispose() {
+    public void dispose()
+    {
+        map.dispose();
+        renderer.dispose();
+        world.dispose();
+        b2dr.dispose();
+
 
     }
 }
