@@ -94,6 +94,7 @@ public class PlayScreen  implements Screen {
 
     public void handleInput(float dt)
     {
+        /*
         if(controller.isUpPressed())
         {
             player.b2body.applyLinearImpulse(new Vector2(0,4f), player.b2body.getWorldCenter(), true);
@@ -111,6 +112,15 @@ public class PlayScreen  implements Screen {
             player.b2body.applyLinearImpulse(new Vector2(0,-4f), player.b2body.getWorldCenter(), true);
         }
 
+         */
+        if(controller.isRightPressed())
+        {
+            player.b2body.setLinearVelocity(new Vector2(1, player.b2body.getLinearVelocity().y));
+        }
+        else if (controller.isLeftPressed())
+        {
+            player.b2body.setLinearVelocity(new Vector2(-1, player.b2body.getLinearVelocity().y));
+        }
 
     }
 
