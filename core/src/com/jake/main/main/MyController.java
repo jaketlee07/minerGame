@@ -29,7 +29,7 @@ public class MyController extends ApplicationAdapter {
     public MyController()
     {
         cam = new OrthographicCamera();
-        viewport =new FitViewport (800, 480, cam);
+        viewport = new FitViewport (800, 480, cam);
         stage = new Stage(viewport, MyGame.batch);
 
         stage.addListener(new InputListener(){
@@ -73,11 +73,6 @@ public class MyController extends ApplicationAdapter {
             }
         });
 
-
-
-
-
-
         Gdx.input.setInputProcessor(stage);
 
         Table table = new Table();
@@ -85,15 +80,16 @@ public class MyController extends ApplicationAdapter {
 
         Image upImg = new Image(new Texture("up.png"));
         upImg.setSize(50,50);
+        stage.addActor(upImg);
         upImg.addListener(new InputListener()
         {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //return super.touchDown(event, x, y, pointer, button);
-
+                Gdx.app.debug("DEBUG", "upClicked");
                 upPressed = true;
-                return true;
+                return false;
 
             }
 
@@ -107,15 +103,16 @@ public class MyController extends ApplicationAdapter {
 
         Image rightImg = new Image(new Texture("right.png"));
         rightImg.setSize(50,50);
+        stage.addActor(rightImg);
         rightImg.addListener(new InputListener()
         {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //return super.touchDown(event, x, y, pointer, button);
-
+                Gdx.app.debug("DEBUG", "rightClicked");
                 rightPressed = true;
-                return true;
+                return false;
 
             }
 
@@ -123,21 +120,24 @@ public class MyController extends ApplicationAdapter {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 //super.touchUp(event, x, y, pointer, button);
 
-                rightPressed= false;
+                rightPressed = false;
             }
+
+            
         });
 
         Image downImg = new Image(new Texture("down.png"));
         downImg.setSize(50,50);
+        stage.addActor(downImg);
         downImg.addListener(new InputListener()
         {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //return super.touchDown(event, x, y, pointer, button);
-
+                Gdx.app.debug("DEBUG", "downClicked");
                 downPressed = true;
-                return true;
+                return false;
 
             }
 
@@ -151,15 +151,16 @@ public class MyController extends ApplicationAdapter {
 
         Image leftImg = new Image(new Texture("left.png"));
         leftImg.setSize(50,50);
+        stage.addActor(leftImg);
         leftImg.addListener(new InputListener()
         {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //return super.touchDown(event, x, y, pointer, button);
-
+                Gdx.app.debug("DEBUG", "leftClicked");
                 leftPressed = true;
-                return true;
+                return false;
 
             }
 
@@ -192,6 +193,7 @@ public class MyController extends ApplicationAdapter {
     public void draw()
     {
         stage.draw();
+        stage.act();
     }
 
     public boolean isUpPressed() {

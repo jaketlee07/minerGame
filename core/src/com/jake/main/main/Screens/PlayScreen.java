@@ -88,11 +88,12 @@ public class PlayScreen  implements Screen {
     }
 
     @Override
-    public void show() {
+    public void show()
+    {
 
     }
 
-    public void handleInput(float dt)
+    public void handleInput()
     {
         /*
         if(controller.isUpPressed())
@@ -126,8 +127,8 @@ public class PlayScreen  implements Screen {
 
     public void update(float dt)
     {
-        handleInput(dt);
         player.update(dt);
+        handleInput();
         gamecam.update();
         renderer.setView(gamecam);
 
@@ -139,7 +140,7 @@ public class PlayScreen  implements Screen {
     @Override
     public void render(float delta)
         {
-            update(delta);
+            update(Gdx.graphics.getDeltaTime());
 
             // Clear the game screen with black
             Gdx.gl.glClearColor(0,0,0,1);
