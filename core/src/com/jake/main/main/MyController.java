@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,13 +18,14 @@ import com.jake.main.main.Screens.PlayScreen;
 import sun.rmi.runtime.Log;
 
 
-public class MyController extends ApplicationAdapter {
+public class MyController extends MyGestureHandler {
 
     Viewport viewport;
     Stage stage;
     boolean upPressed, downPressed, leftPressed, rightPressed;
     OrthographicCamera cam;
 
+    GestureDetector myGestureDetector;
     private static final String TAG = "MyController";
 
     public MyController()
@@ -32,7 +34,7 @@ public class MyController extends ApplicationAdapter {
         viewport = new FitViewport (800, 480, cam);
         stage = new Stage(viewport, MyGame.batch);
 
-        stage.addListener(new InputListener(){
+        /*stage.addListener(new InputListener(){
 
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
@@ -73,7 +75,11 @@ public class MyController extends ApplicationAdapter {
             }
         });
 
-        Gdx.input.setInputProcessor(stage);
+         */
+
+
+
+        Gdx.input.setInputProcessor(new GestureDetector(myGestureDetector));
 
         Table table = new Table();
         table.left().bottom();
@@ -81,27 +87,24 @@ public class MyController extends ApplicationAdapter {
         Image upImg = new Image(new Texture("up.png"));
         upImg.setSize(50,50);
         stage.addActor(upImg);
-        upImg.addListener(new InputListener()
-        {
+        myGestureDetector = new GestureDetector(this, new MyGestureHandler())
+        upImg.addListener(new GestureDetector(myGestureDetector) {
+
 
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                //return super.touchDown(event, x, y, pointer, button);
-                Gdx.app.debug("DEBUG", "upClicked");
+            public boolean touchDown(float x, float y, int pointer, int button) {
                 upPressed = true;
-                return false;
-
+                return super.touchDown(x, y, pointer, button);
             }
 
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                //super.touchUp(event, x, y, pointer, button);
-
+            public boolean touchUp(float x, float y, int pointer, int button) {
                 upPressed = false;
+                return super.touchUp(x, y, pointer, button);
             }
         });
 
-        Image rightImg = new Image(new Texture("right.png"));
+            Image rightImg = new Image(new Texture("right.png"));
         rightImg.setSize(50,50);
         stage.addActor(rightImg);
         rightImg.addListener(new InputListener()
@@ -123,7 +126,7 @@ public class MyController extends ApplicationAdapter {
                 rightPressed = false;
             }
 
-            
+
         });
 
         Image downImg = new Image(new Texture("down.png"));
