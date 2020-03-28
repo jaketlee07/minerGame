@@ -23,6 +23,12 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -31,10 +37,6 @@ import com.jake.main.main.MyController;
 import com.jake.main.main.MyGame;
 import com.jake.main.main.Sprites.Miner;
 import com.jake.main.main.Tools.B2DWorldCreator;
-import com.sun.org.apache.xpath.internal.operations.Or;
-
-import sun.rmi.runtime.Log;
-
 
 public class PlayScreen  implements Screen {
     private MyGame game;
@@ -54,11 +56,15 @@ public class PlayScreen  implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
 
+    Viewport viewport;
+    Stage stage;
+    boolean upPressed, downPressed, leftPressed, rightPressed;
+    OrthographicCamera cam;
+
     MyController controller;
 
 
-    public PlayScreen(MyGame game)
-    {
+    public PlayScreen(MyGame game) {
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         atlas = new TextureAtlas("Mario_and_Enemies.pack");
@@ -67,22 +73,149 @@ public class PlayScreen  implements Screen {
         // create cam to follow character through map
         gamecam = new OrthographicCamera();
         // create a FitViewport to maintain virtual aspect ration despite device screen size
-        gamePort = new FitViewport(MyGame.V_WIDTH / MyGame.PPM, MyGame.V_HEIGHT / MyGame.PPM,gamecam);
+        gamePort = new FitViewport(MyGame.V_WIDTH / MyGame.PPM, MyGame.V_HEIGHT / MyGame.PPM, gamecam);
 
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("map3.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MyGame.PPM);
-        gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight()/2 , 0);
+        gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
-        world = new World(new Vector2(0,-10 ), true);
+        world = new World(new Vector2(0, 0), true);
         b2dr = new Box2DDebugRenderer();
 
         player = new Miner(world, this);
 
         new B2DWorldCreator(world, map);
 
-        controller = new MyController();
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
+        cam = new OrthographicCamera();
+        viewport = new FitViewport(800, 480, cam);
+        stage = new Stage(viewport, MyGame.batch);
+        Gdx.input.setInputProcessor(stage);
+
+
+
+
+
+        Table table = new Table();
+        table.left().bottom();
+
+        final ImageButton upImg = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("up.png"))));
+        upImg.setSize(50,50);
+        stage.addActor(upImg);
+        upImg.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.debug("DEBUG", "upClicked");
+                Gdx.app.debug("DEBUG", "upVelocity");
+                player.b2body.setLinearVelocity(new Vector2(0,4f));
+
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                player.b2body.setLinearVelocity(new Vector2(0,0));
+            }
+        });
+
+
+
+        ImageButton rightImg = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("right.png"))));
+        rightImg.setSize(50,50);
+        stage.addActor(rightImg);
+        rightImg.addListener(new InputListener()
+        {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                //return super.touchDown(event, x, y, pointer, button);
+                Gdx.app.debug("DEBUG", "rightVelocity");
+                player.b2body.setLinearVelocity(new Vector2(4f, 0));
+                return true;
+
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                //super.touchUp(event, x, y, pointer, button);
+
+                player.b2body.setLinearVelocity(new Vector2(0,0));
+            }
+
+
+        });
+
+        ImageButton downImg = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("down.png"))));
+        downImg.setSize(50,50);
+        stage.addActor(downImg);
+        downImg.addListener(new InputListener()
+        {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                //return super.touchDown(event, x, y, pointer, button);
+                Gdx.app.debug("DEBUG", "downVelocity");
+                player.b2body.setLinearVelocity(new Vector2(0,-4f));
+                return true;
+
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                //super.touchUp(event, x, y, pointer, button);
+
+                player.b2body.setLinearVelocity(new Vector2(0,0));
+            }
+        });
+
+        ImageButton leftImg = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("left.png"))));
+        leftImg.setSize(50,50);
+        stage.addActor(leftImg);
+        leftImg.addListener(new InputListener()
+        {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                //return super.touchDown(event, x, y, pointer, button);
+                Gdx.app.debug("DEBUG", "leftVelocity");
+                player.b2body.setLinearVelocity(new Vector2(-4f, 0));
+                return true;
+
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                //super.touchUp(event, x, y, pointer, button);
+
+                player.b2body.setLinearVelocity(new Vector2(0,0));
+            }
+        });
+
+        table.add();
+        table.add(upImg).size(upImg.getWidth(), upImg.getHeight());
+        table.add();
+        table.row().pad(5,5,5,5);
+        table.add(leftImg).size(leftImg.getWidth(), leftImg.getHeight());
+        table.add();
+        table.add(rightImg).size(rightImg.getWidth(), rightImg.getHeight());
+        table.add();
+        table.row().padBottom(5);
+        table.add();
+        table.add(downImg).size(downImg.getWidth(), downImg.getHeight());
+        table.add();
+        table.pack();
+
+        stage.addActor(table);
     }
+
+
+
+
+
+
+
+
 
     public TextureAtlas getAtlas()
     {
@@ -98,28 +231,6 @@ public class PlayScreen  implements Screen {
 
     public void handleInput(float dt) {
 
-        Gdx.app.debug("DEBUG", "handleInput");
-
-        if(controller.isUpPressed())
-        {
-            Gdx.app.debug("DEBUG", "upVelocity");
-            player.b2body.setLinearVelocity(new Vector2(0,4f));
-        }
-        if(controller.isRightPressed() && player.b2body.getLinearVelocity().x <= 2)
-        {
-            Gdx.app.debug("DEBUG", "rightVelocity");
-            player.b2body.setLinearVelocity(new Vector2(0.1f, 0));
-        }
-        if(controller.isLeftPressed() && player.b2body.getLinearVelocity().x <= -2)
-        {
-            Gdx.app.debug("DEBUG", "leftVelocity");
-            player.b2body.setLinearVelocity(new Vector2(-0.1f, 0));
-        }
-        if(controller.isDownPressed())
-        {
-            Gdx.app.debug("DEBUG", "downVelocity");
-            player.b2body.setLinearVelocity(new Vector2(0,-4f));
-        }
 
     }
 
@@ -155,7 +266,8 @@ public class PlayScreen  implements Screen {
 
         b2dr.render(world, gamecam.combined);
 
-        controller.draw();
+        stage.draw();
+        stage.act();
 
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
@@ -167,7 +279,7 @@ public class PlayScreen  implements Screen {
     public void resize(int width, int height)
     {
         gamePort.update(width,height);
-        controller.resize(width,height);
+        viewport.update(width, height);
     }
 
     @Override
@@ -195,4 +307,7 @@ public class PlayScreen  implements Screen {
 
 
     }
+
+
+
 }

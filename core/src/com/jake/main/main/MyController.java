@@ -18,12 +18,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jake.main.main.Screens.PlayScreen;
 
-import sun.rmi.runtime.Log;
 
 
 public class MyController {
 
-    Viewport viewport;
+    /*Viewport viewport;
     Stage stage;
     boolean upPressed, downPressed, leftPressed, rightPressed;
     OrthographicCamera cam;
@@ -213,6 +212,8 @@ public class MyController {
     {
         viewport.update(width, height);
     }
+
+     */
 
 
 }
