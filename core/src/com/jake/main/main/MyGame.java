@@ -15,21 +15,22 @@ public class MyGame extends Game{
     public static final float PPM = 100;
 
     public static SpriteBatch batch;
-    MyController controller;
-
+    public static MyController controller;
 
     @Override
     public void create () {
         batch = new SpriteBatch();
-        setScreen(new PlayScreen(this ));
+        setScreen(new PlayScreen(this));
         controller = new MyController();
+
     }
+
 
     @Override
     public void render () {
         super.render();
-        if(Gdx.app.getType() == Application.ApplicationType.Android)
-            controller.draw();
+        controller.draw();
+
     }
 
     @Override

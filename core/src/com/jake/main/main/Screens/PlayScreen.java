@@ -54,11 +54,13 @@ public class PlayScreen  implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
 
-    public static MyController controller;
+    MyController controller;
 
 
     public PlayScreen(MyGame game)
     {
+
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
         atlas = new TextureAtlas("Mario_and_Enemies.pack");
 
         this.game = game;
@@ -79,7 +81,7 @@ public class PlayScreen  implements Screen {
 
         new B2DWorldCreator(world, map);
 
-       controller = new MyController();
+        controller = new MyController();
     }
 
     public TextureAtlas getAtlas()
@@ -93,34 +95,30 @@ public class PlayScreen  implements Screen {
 
     }
 
-    public void handleInput()
-    {
-        /*
+
+    public void handleInput(float dt) {
+
+        Gdx.app.debug("DEBUG", "handleInput");
+
         if(controller.isUpPressed())
         {
-            player.b2body.applyLinearImpulse(new Vector2(0,4f), player.b2body.getWorldCenter(), true);
+            Gdx.app.debug("DEBUG", "upVelocity");
+            player.b2body.setLinearVelocity(new Vector2(0,4f));
         }
         if(controller.isRightPressed() && player.b2body.getLinearVelocity().x <= 2)
         {
-            player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
+            Gdx.app.debug("DEBUG", "rightVelocity");
+            player.b2body.setLinearVelocity(new Vector2(0.1f, 0));
         }
         if(controller.isLeftPressed() && player.b2body.getLinearVelocity().x <= -2)
         {
-            player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+            Gdx.app.debug("DEBUG", "leftVelocity");
+            player.b2body.setLinearVelocity(new Vector2(-0.1f, 0));
         }
         if(controller.isDownPressed())
         {
-            player.b2body.applyLinearImpulse(new Vector2(0,-4f), player.b2body.getWorldCenter(), true);
-        }
-
-         */
-        if(controller.isRightPressed())
-        {
-            player.b2body.setLinearVelocity(new Vector2(1, player.b2body.getLinearVelocity().y));
-        }
-        else if (controller.isLeftPressed())
-        {
-            player.b2body.setLinearVelocity(new Vector2(-1, player.b2body.getLinearVelocity().y));
+            Gdx.app.debug("DEBUG", "downVelocity");
+            player.b2body.setLinearVelocity(new Vector2(0,-4f));
         }
 
     }
@@ -128,45 +126,48 @@ public class PlayScreen  implements Screen {
     public void update(float dt)
     {
         player.update(dt);
-        handleInput();
-        gamecam.update();
+        handleInput(dt);
         renderer.setView(gamecam);
 
         world.step(1/60f, 6,2);
 
         gamecam.position.x = player.b2body.getPosition().x;
+        gamecam.update();
     }
 
     @Override
     public void render(float delta)
+    {
+        update(delta);
+        update(Gdx.graphics.getDeltaTime());
+
+        if(Gdx.input.isTouched())
         {
-            update(Gdx.graphics.getDeltaTime());
-
-            // Clear the game screen with black
-            Gdx.gl.glClearColor(0,0,0,1);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-            // render our game map
-            renderer.render();
-
-            b2dr.render(world, gamecam.combined);
-
-            if (Gdx.app.getType() == Application.ApplicationType.Android)
-            {
-                controller.draw();
-            }
-
-            game.batch.setProjectionMatrix(gamecam.combined);
-            game.batch.begin();
-            player.draw(game.batch);
-            game.batch.end();
+            handleInput(delta);
         }
+
+        // Clear the game screen with black
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // render our game map
+        renderer.render();
+
+        b2dr.render(world, gamecam.combined);
+
+        controller.draw();
+
+        game.batch.setProjectionMatrix(gamecam.combined);
+        game.batch.begin();
+        player.draw(game.batch);
+        game.batch.end();
+    }
 
     @Override
     public void resize(int width, int height)
     {
         gamePort.update(width,height);
-       controller.resize(width,height);
+        controller.resize(width,height);
     }
 
     @Override
