@@ -89,7 +89,7 @@ public class PlayScreen  implements Screen {
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         cam = new OrthographicCamera();
-        viewport = new FitViewport(800, 480, cam);
+        viewport = new FitViewport(400, 240, cam);
         stage = new Stage(viewport, MyGame.batch);
         Gdx.input.setInputProcessor(stage);
 
@@ -101,14 +101,14 @@ public class PlayScreen  implements Screen {
         table.left().bottom();
 
         final ImageButton upImg = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("up.png"))));
-        upImg.setSize(50,50);
+        upImg.setSize(25,25);
         stage.addActor(upImg);
         upImg.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.debug("DEBUG", "upClicked");
                 Gdx.app.debug("DEBUG", "upVelocity");
-                player.b2body.setLinearVelocity(new Vector2(0,4f));
+                player.b2body.setLinearVelocity(new Vector2(0,1f));
 
                 return true;
             }
@@ -122,7 +122,7 @@ public class PlayScreen  implements Screen {
 
 
         ImageButton rightImg = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("right.png"))));
-        rightImg.setSize(50,50);
+        rightImg.setSize(25,25);
         stage.addActor(rightImg);
         rightImg.addListener(new InputListener()
         {
@@ -131,7 +131,7 @@ public class PlayScreen  implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //return super.touchDown(event, x, y, pointer, button);
                 Gdx.app.debug("DEBUG", "rightVelocity");
-                player.b2body.setLinearVelocity(new Vector2(4f, 0));
+                player.b2body.setLinearVelocity(new Vector2(1f, 0));
                 return true;
 
             }
@@ -147,7 +147,7 @@ public class PlayScreen  implements Screen {
         });
 
         ImageButton downImg = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("down.png"))));
-        downImg.setSize(50,50);
+        downImg.setSize(25,25);
         stage.addActor(downImg);
         downImg.addListener(new InputListener()
         {
@@ -156,7 +156,7 @@ public class PlayScreen  implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //return super.touchDown(event, x, y, pointer, button);
                 Gdx.app.debug("DEBUG", "downVelocity");
-                player.b2body.setLinearVelocity(new Vector2(0,-4f));
+                player.b2body.setLinearVelocity(new Vector2(0,-1f));
                 return true;
 
             }
@@ -170,7 +170,7 @@ public class PlayScreen  implements Screen {
         });
 
         ImageButton leftImg = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("left.png"))));
-        leftImg.setSize(50,50);
+        leftImg.setSize(25,25);
         stage.addActor(leftImg);
         leftImg.addListener(new InputListener()
         {
@@ -179,7 +179,7 @@ public class PlayScreen  implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //return super.touchDown(event, x, y, pointer, button);
                 Gdx.app.debug("DEBUG", "leftVelocity");
-                player.b2body.setLinearVelocity(new Vector2(-4f, 0));
+                player.b2body.setLinearVelocity(new Vector2(-1f, 0));
                 return true;
 
             }
@@ -195,12 +195,12 @@ public class PlayScreen  implements Screen {
         table.add();
         table.add(upImg).size(upImg.getWidth(), upImg.getHeight());
         table.add();
-        table.row().pad(5,5,5,5);
+        table.row().pad(2,2,2,2);
         table.add(leftImg).size(leftImg.getWidth(), leftImg.getHeight());
         table.add();
         table.add(rightImg).size(rightImg.getWidth(), rightImg.getHeight());
         table.add();
-        table.row().padBottom(5);
+        table.row().padBottom(2);
         table.add();
         table.add(downImg).size(downImg.getWidth(), downImg.getHeight());
         table.add();
@@ -243,6 +243,7 @@ public class PlayScreen  implements Screen {
         world.step(1/60f, 6,2);
 
         gamecam.position.x = player.b2body.getPosition().x;
+        gamecam.position.y = player.b2body.getPosition().y;
         gamecam.update();
     }
 
