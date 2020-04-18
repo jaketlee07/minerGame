@@ -1,0 +1,33 @@
+
+minerCharacter.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Miner 2.0 walk down
+  rotate: false
+  xy: 0, 140
+  size: 396, 68
+  orig: 396, 68
+  offset: 0, 0
+  index: -1
+Miner 2.0 walk up
+  rotate: false
+  xy: 0, 70
+  size: 396, 68
+  orig: 396, 68
+  offset: 0, 0
+  index: -1
+Miner 2.0 walk right
+  rotate: false
+  xy: 398, 140
+  size: 396, 68
+  orig: 396, 68
+  offset: 0, 0
+  index: -1
+Miner 2.0 walk left
+  rotate: false
+  xy: 0, 0
+  size: 396, 68
+  orig: 396, 68
+  offset: 0, 0
+  index: -1

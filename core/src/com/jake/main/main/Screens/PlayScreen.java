@@ -67,7 +67,7 @@ public class PlayScreen  implements Screen {
     public PlayScreen(MyGame game) {
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        atlas = new TextureAtlas("Mario_and_Enemies.pack");
+        atlas = new TextureAtlas("minerCharacter.pack");
 
         this.game = game;
         // create cam to follow character through map
