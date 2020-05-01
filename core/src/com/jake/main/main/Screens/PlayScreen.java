@@ -29,14 +29,21 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.jake.main.main.Items.Item;
+import com.jake.main.main.Items.ItemDef;
+import com.jake.main.main.Items.Powerup;
 import com.jake.main.main.MyController;
 import com.jake.main.main.MyGame;
 import com.jake.main.main.Sprites.Miner;
 import com.jake.main.main.Tools.B2DWorldCreator;
+import com.jake.main.main.Tools.WorldContactListener;
+
+import java.util.PriorityQueue;
 
 public class PlayScreen  implements Screen {
     private MyGame game;
@@ -55,6 +62,9 @@ public class PlayScreen  implements Screen {
     //Box2d variable
     private World world;
     private Box2DDebugRenderer b2dr;
+
+    private Array<Item> items;
+    private PriorityQueue<ItemDef> itemsToSpawn;
 
     Viewport viewport;
     Stage stage;
@@ -76,7 +86,7 @@ public class PlayScreen  implements Screen {
         gamePort = new FitViewport(MyGame.V_WIDTH / MyGame.PPM, MyGame.V_HEIGHT / MyGame.PPM, gamecam);
 
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("map3.tmx");
+        map = mapLoader.load("map4.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MyGame.PPM);
         gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
@@ -85,13 +95,18 @@ public class PlayScreen  implements Screen {
 
         player = new Miner(world, this);
 
-        new B2DWorldCreator(world, map);
+        world.setContactListener(new WorldContactListener());
+
+        new B2DWorldCreator(this);
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         cam = new OrthographicCamera();
         viewport = new FitViewport(400, 240, cam);
         stage = new Stage(viewport, MyGame.batch);
         Gdx.input.setInputProcessor(stage);
+
+        items = new Array<Item>();
+        itemsToSpawn = new PriorityQueue<ItemDef>();
 
 
 
@@ -106,8 +121,8 @@ public class PlayScreen  implements Screen {
         upImg.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Gdx.app.debug("DEBUG", "upClicked");
-                Gdx.app.debug("DEBUG", "upVelocity");
+
+                Gdx.app.debug("Button", "up");
                 player.b2body.setLinearVelocity(new Vector2(0,1f));
 
                 return true;
@@ -129,8 +144,8 @@ public class PlayScreen  implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                //return super.touchDown(event, x, y, pointer, button);
-                Gdx.app.debug("DEBUG", "rightVelocity");
+
+                Gdx.app.debug("Button", "right");
                 player.b2body.setLinearVelocity(new Vector2(1f, 0));
                 return true;
 
@@ -154,8 +169,8 @@ public class PlayScreen  implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                //return super.touchDown(event, x, y, pointer, button);
-                Gdx.app.debug("DEBUG", "downVelocity");
+
+                Gdx.app.debug("Button", "down");
                 player.b2body.setLinearVelocity(new Vector2(0,-1f));
                 return true;
 
@@ -177,8 +192,8 @@ public class PlayScreen  implements Screen {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                //return super.touchDown(event, x, y, pointer, button);
-                Gdx.app.debug("DEBUG", "leftVelocity");
+
+                Gdx.app.debug("Button", "left");
                 player.b2body.setLinearVelocity(new Vector2(-1f, 0));
                 return true;
 
@@ -192,14 +207,72 @@ public class PlayScreen  implements Screen {
             }
         });
 
+       /* ImageButton aImg = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("A-Button.png"))));
+        aImg.setSize(25,25);
+        stage.addActor(aImg);
+        leftImg.addListener(new InputListener()
+        {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                Gdx.app.debug("Button", "A");
+
+                return true;
+
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                //super.touchUp(event, x, y, pointer, button);
+
+
+            }
+        });
+
+        ImageButton bImg = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("B-Button.png"))));
+        bImg.setSize(25,25);
+        stage.addActor(bImg);
+        leftImg.addListener(new InputListener()
+        {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                Gdx.app.debug("Button", "A");
+
+                return true;
+
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                //super.touchUp(event, x, y, pointer, button);
+
+
+            }
+        });
+
+        */
+
+
+
         table.add();
         table.add(upImg).size(upImg.getWidth(), upImg.getHeight());
         table.add();
+        //table.pad(0,50,0,0);
+        //table.add();
+        //table.add(bImg).size(bImg.getWidth(), bImg.getHeight());
+        //table.add();
         table.row().pad(2,2,2,2);
         table.add(leftImg).size(leftImg.getWidth(), leftImg.getHeight());
         table.add();
         table.add(rightImg).size(rightImg.getWidth(), rightImg.getHeight());
         table.add();
+        //table.add(aImg).size(aImg.getWidth(), aImg.getHeight());
+        //table.add();
+        //table.pad(0,45,0,0);
+        //table.add();
         table.row().padBottom(2);
         table.add();
         table.add(downImg).size(downImg.getWidth(), downImg.getHeight());
@@ -207,10 +280,42 @@ public class PlayScreen  implements Screen {
         table.pack();
 
         stage.addActor(table);
+
+        /*
+        Table ab = new Table();
+        ab.right().bottom();
+
+        ab.add();
+        ab.add(bImg).size(bImg.getWidth(), bImg.getHeight());
+        ab.add();
+        ab.row().pad(4,4,2,4);
+        ab.add(aImg).size(aImg.getWidth(), aImg.getHeight());
+        ab.add();
+        ab.pack();
+        stage.addActor(table);
+
+         */
+
+
     }
 
 
+    public void spawnItem(ItemDef idef)
+    {
+        itemsToSpawn.add(idef);
+    }
 
+    public void handleSpawningItems()
+    {
+        if(!itemsToSpawn.isEmpty())
+        {
+            ItemDef idef = itemsToSpawn.poll();
+            if(idef.type == Powerup.class)
+            {
+                items.add(new Powerup(this, idef.position.x, idef.position.y));
+            }
+        }
+    }
 
 
 
@@ -238,6 +343,7 @@ public class PlayScreen  implements Screen {
     {
         player.update(dt);
         handleInput(dt);
+        handleSpawningItems();
         renderer.setView(gamecam);
 
         world.step(1/60f, 6,2);
@@ -245,6 +351,12 @@ public class PlayScreen  implements Screen {
         gamecam.position.x = player.b2body.getPosition().x;
         gamecam.position.y = player.b2body.getPosition().y;
         gamecam.update();
+
+        for(Item item : items)
+        {
+            item.update(dt);
+        }
+
     }
 
     @Override
@@ -264,16 +376,20 @@ public class PlayScreen  implements Screen {
 
         // render our game map
         renderer.render();
-
+        game.batch.setProjectionMatrix(gamecam.combined);
         b2dr.render(world, gamecam.combined);
+        game.batch.begin();
+        for (Item item : items)
+        {
+            item.draw(game.batch);
+        }
+
+        player.draw(game.batch);
+        game.batch.end();
 
         stage.draw();
         stage.act();
 
-        game.batch.setProjectionMatrix(gamecam.combined);
-        game.batch.begin();
-        player.draw(game.batch);
-        game.batch.end();
     }
 
     @Override
@@ -281,6 +397,13 @@ public class PlayScreen  implements Screen {
     {
         gamePort.update(width,height);
         viewport.update(width, height);
+    }
+
+    public TiledMap getMap(){
+        return map;
+    }
+    public World getWorld(){
+        return world;
     }
 
     @Override

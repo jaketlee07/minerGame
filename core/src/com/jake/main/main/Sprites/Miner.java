@@ -3,9 +3,11 @@ package com.jake.main.main.Sprites;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -163,10 +165,40 @@ public class Miner extends Sprite {
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(5 / MyGame.PPM);
+        shape.setRadius(8 / MyGame.PPM);
+        fdef.filter.categoryBits = MyGame.MINER_BIT;
+        fdef.filter.maskBits = MyGame.DEFAULT_BIT | MyGame.BOULDER_BIT | MyGame.WALL_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef);
+
+        EdgeShape head = new EdgeShape();
+        head.set(new Vector2(-5 / MyGame.PPM, 8 / MyGame.PPM), new Vector2(5 / MyGame.PPM, 8 / MyGame.PPM));
+        fdef.shape = head;
+        fdef.isSensor = true;
+
+        b2body.createFixture(fdef).setUserData("head");
+
+        EdgeShape right = new EdgeShape();
+        right.set(new Vector2(8 / MyGame.PPM, -6 / MyGame.PPM), new Vector2(8 / MyGame.PPM, 6 / MyGame.PPM));
+        fdef.shape = right;
+        fdef.isSensor = true;
+
+        b2body.createFixture(fdef).setUserData("right");
+
+        EdgeShape left = new EdgeShape();
+        left.set(new Vector2(-8 / MyGame.PPM, -6 / MyGame.PPM), new Vector2(-8 / MyGame.PPM, 6 / MyGame.PPM));
+        fdef.shape = left;
+        fdef.isSensor = true;
+
+        b2body.createFixture(fdef).setUserData("left");
+
+        EdgeShape foot = new EdgeShape();
+        foot.set(new Vector2(-5 / MyGame.PPM, -8 / MyGame.PPM), new Vector2(5 / MyGame.PPM, -8 / MyGame.PPM));
+        fdef.shape = foot;
+        fdef.isSensor = true;
+
+        b2body.createFixture(fdef).setUserData("foot");
     }
 
 }
