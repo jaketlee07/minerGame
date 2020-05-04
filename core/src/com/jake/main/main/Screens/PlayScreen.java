@@ -86,7 +86,7 @@ public class PlayScreen  implements Screen {
         gamePort = new FitViewport(MyGame.V_WIDTH / MyGame.PPM, MyGame.V_HEIGHT / MyGame.PPM, gamecam);
 
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("map4.tmx");
+        map = mapLoader.load("map5.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MyGame.PPM);
         gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
