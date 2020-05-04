@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="25" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="38">
  <tileset firstgid="1" source="minerTexturePack.tsx"/>
- <layer id="1" name="background" width="25" height="25">
+ <layer id="1" name="background" width="25" height="25" locked="1">
   <data encoding="csv">
 10,10,10,9,9,9,9,9,9,10,10,9,9,9,9,10,10,10,10,10,10,10,10,10,10,
 10,9,9,10,10,10,10,9,9,9,10,10,10,10,10,9,9,10,10,9,10,10,10,10,10,
