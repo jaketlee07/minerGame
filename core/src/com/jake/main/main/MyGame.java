@@ -7,7 +7,9 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.jake.main.main.MainMenu.MainMenu;
 import com.jake.main.main.Screens.PlayScreen;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class MyGame extends Game{
     public static final int V_WIDTH = 480;
@@ -23,11 +25,17 @@ public class MyGame extends Game{
     public static SpriteBatch batch;
     public static MyController controller;
 
+    public BitmapFont font;
+
     @Override
     public void create () {
         batch = new SpriteBatch();
-        setScreen(new PlayScreen(this));
-        controller = new MyController();
+
+        font = new BitmapFont();
+
+        setScreen(new MainMenu(this));
+        //setScreen(new PlayScreen(this));
+        //   controller = new MyController();
 
     }
 
@@ -42,5 +50,10 @@ public class MyGame extends Game{
     @Override
     public void dispose () {
         batch.dispose();
+        font.dispose();
+    }
+
+    public SpriteBatch getBatch(){
+        return this.batch;
     }
 }
