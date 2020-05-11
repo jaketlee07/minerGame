@@ -21,6 +21,7 @@ public class MyGame extends Game{
     public static final short BOULDER_BIT = 4;
     public static final short WALL_BIT = 8;
     public static final short DESTROYED_BIT = 16;
+    public static final short POWERUP_BIT = 32;
 
     public static SpriteBatch batch;
     public static MyController controller;

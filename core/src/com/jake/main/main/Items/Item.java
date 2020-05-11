@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.jake.main.main.MyGame;
 import com.jake.main.main.Screens.PlayScreen;
+import com.jake.main.main.Sprites.Miner;
 
 public abstract class Item extends Sprite
 {
@@ -29,7 +30,7 @@ public abstract class Item extends Sprite
     }
 
     public abstract void defineItem();
-    public abstract void use();
+    public abstract void use(Miner miner);
 
     public void update(float dt)
     {

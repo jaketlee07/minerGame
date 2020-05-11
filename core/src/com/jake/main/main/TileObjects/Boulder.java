@@ -38,6 +38,7 @@ public class Boulder extends InteractiveTileObject{
     {
         Gdx.app.debug("Boulder", "Right Collision");
         setCategoryFilter(MyGame.DESTROYED_BIT);
+        screen.spawnItem(new ItemDef(new Vector2(body.getPosition().x, body.getPosition().y), Powerup.class));
         getCell().setTile(null);
     }
 
@@ -46,6 +47,7 @@ public class Boulder extends InteractiveTileObject{
     {
         Gdx.app.debug("Boulder", "Left Collision");
         setCategoryFilter(MyGame.DESTROYED_BIT);
+        screen.spawnItem(new ItemDef(new Vector2(body.getPosition().x, body.getPosition().y), Powerup.class));
         getCell().setTile(null);
     }
 
@@ -54,6 +56,7 @@ public class Boulder extends InteractiveTileObject{
     {
         Gdx.app.debug("Boulder", "Foot Collision");
         setCategoryFilter(MyGame.DESTROYED_BIT);
+        screen.spawnItem(new ItemDef(new Vector2(body.getPosition().x, body.getPosition().y), Powerup.class));
         getCell().setTile(null);
     }
 }

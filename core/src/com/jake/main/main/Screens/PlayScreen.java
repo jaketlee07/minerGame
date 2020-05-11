@@ -44,6 +44,8 @@ import com.jake.main.main.Tools.B2DWorldCreator;
 import com.jake.main.main.Tools.WorldContactListener;
 
 import java.util.PriorityQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayScreen  implements Screen {
     private MyGame game;
@@ -57,14 +59,14 @@ public class PlayScreen  implements Screen {
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
 
-    private Miner player;
+    public Miner player;
 
     //Box2d variable
     private World world;
     private Box2DDebugRenderer b2dr;
 
     private Array<Item> items;
-    private PriorityQueue<ItemDef> itemsToSpawn;
+    private LinkedBlockingQueue<ItemDef> itemsToSpawn;
 
     Viewport viewport;
     Stage stage;
@@ -86,7 +88,7 @@ public class PlayScreen  implements Screen {
         gamePort = new FitViewport(MyGame.V_WIDTH / MyGame.PPM, MyGame.V_HEIGHT / MyGame.PPM, gamecam);
 
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("map5.tmx");
+        map = mapLoader.load("seventy.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MyGame.PPM);
         gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
@@ -106,7 +108,7 @@ public class PlayScreen  implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         items = new Array<Item>();
-        itemsToSpawn = new PriorityQueue<ItemDef>();
+        itemsToSpawn = new LinkedBlockingQueue<ItemDef>();
 
 
 
@@ -123,7 +125,19 @@ public class PlayScreen  implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
                 Gdx.app.debug("Button", "up");
-                player.b2body.setLinearVelocity(new Vector2(0,1f));
+                if(Powerup.gold)
+                {
+                    player.b2body.setLinearVelocity(new Vector2(0,2f));
+                }
+                else if (Powerup.coal)
+                {
+                    player.b2body.setLinearVelocity(new Vector2(0,0.5f));
+                }
+                else
+                {
+                    player.b2body.setLinearVelocity(new Vector2(0,1f));
+                }
+
 
                 return true;
             }
@@ -146,7 +160,19 @@ public class PlayScreen  implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
                 Gdx.app.debug("Button", "right");
-                player.b2body.setLinearVelocity(new Vector2(1f, 0));
+                if(Powerup.gold)
+                {
+                    player.b2body.setLinearVelocity(new Vector2(2f, 0));
+                }
+                else if (Powerup.coal)
+                {
+                    player.b2body.setLinearVelocity(new Vector2(0.5f,0));
+                }
+                else
+                {
+                    player.b2body.setLinearVelocity(new Vector2(1f, 0));
+                }
+
                 return true;
 
             }
@@ -171,7 +197,19 @@ public class PlayScreen  implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
                 Gdx.app.debug("Button", "down");
-                player.b2body.setLinearVelocity(new Vector2(0,-1f));
+                if(Powerup.gold)
+                {
+                    player.b2body.setLinearVelocity(new Vector2(0, -2));
+                }
+                else if (Powerup.coal)
+                {
+                    player.b2body.setLinearVelocity(new Vector2(0,-0.5f));
+                }
+                else
+                {
+                    player.b2body.setLinearVelocity(new Vector2(0,-1f));
+                }
+
                 return true;
 
             }
@@ -194,7 +232,19 @@ public class PlayScreen  implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
                 Gdx.app.debug("Button", "left");
-                player.b2body.setLinearVelocity(new Vector2(-1f, 0));
+                if(Powerup.gold)
+                {
+                    player.b2body.setLinearVelocity(new Vector2(-2f, 0));
+                }
+                else if (Powerup.coal)
+                {
+                    player.b2body.setLinearVelocity(new Vector2(-0.5f,0));
+                }
+                else
+                {
+                    player.b2body.setLinearVelocity(new Vector2(-1f, 0));
+                }
+
                 return true;
 
             }
