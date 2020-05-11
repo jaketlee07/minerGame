@@ -5,29 +5,36 @@ filter: Nearest,Nearest
 repeat: none
 Miner 2.0 walk down
   rotate: false
-  xy: 0, 140
+  xy: 1, 141
   size: 396, 68
   orig: 396, 68
   offset: 0, 0
   index: -1
 Miner 2.0 walk up
   rotate: false
-  xy: 0, 70
+  xy: 1, 71
   size: 396, 68
   orig: 396, 68
   offset: 0, 0
   index: -1
 Miner 2.0 walk right
   rotate: false
-  xy: 398, 140
+  xy: 399, 141
   size: 396, 68
   orig: 396, 68
   offset: 0, 0
   index: -1
 Miner 2.0 walk left
   rotate: false
-  xy: 0, 0
+  xy: 1, 1
   size: 396, 68
   orig: 396, 68
+  offset: 0, 0
+  index: -1
+powerups
+  rotate: false
+  xy: 399, 107
+  size: 96, 32
+  orig: 96, 32
   offset: 0, 0
   index: -1
